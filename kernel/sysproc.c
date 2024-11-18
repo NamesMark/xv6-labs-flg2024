@@ -83,6 +83,15 @@ sys_kill(void)
   return kill(pid);
 }
 
+
+uint64
+sys_trace(int mask)
+{
+  myproc()->trace_mask = mask;
+
+  return 0;
+}
+
 // return how many clock tick interrupts have occurred
 // since start.
 uint64
