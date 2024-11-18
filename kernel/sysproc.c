@@ -85,8 +85,15 @@ sys_kill(void)
 
 
 uint64
-sys_trace(int mask)
+sys_trace(void)
 {
+  int mask;
+
+  if(argint(0, &mask) < 0)
+    return -1;
+
+  // printf("sys_trace: Received mask %d (0x%x)\n", mask, mask);
+
   myproc()->trace_mask = mask;
 
   return 0;

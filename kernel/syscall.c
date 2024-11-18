@@ -6,6 +6,7 @@
 #include "proc.h"
 #include "syscall.h"
 #include "defs.h"
+#include <stddef.h>
 
 // Fetch the uint64 at addr from the current process.
 int
@@ -157,6 +158,20 @@ char* syscall_name[] = {
   "trace",
 };
 
+void printBits(size_t const size, void const * const ptr)
+{
+    unsigned char *b = (unsigned char*) ptr;
+    unsigned char byte;
+    int i, j;
+    
+    for (i = size-1; i >= 0; i--) {
+        for (j = 7; j >= 0; j--) {
+            byte = (b[i] >> j) & 1;
+            printf("%d", byte);
+        }
+    }
+}
+
 void
 syscall(void)
 {
@@ -167,6 +182,8 @@ syscall(void)
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();
     if (p->trace_mask & (1 << num)) {
+      //printBits(sizeof(p->trace_mask), &p->trace_mask);
+      //printf("\n%d\n", p->trace_mask);
       printf("%d: syscall %s -> %d\n",
             p->pid, syscall_name[num], p->trapframe->a0);
     }
